@@ -7,6 +7,15 @@
       }
       canvas {
         background-color: pink;
+        display: block;
+      }
+      #canvas2 {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .canvases {
+        position: relative;
       }
     </style>
   </head>
@@ -14,7 +23,10 @@
     <h1>Green screen test</h1>
 
     <video></video>
-    <canvas></canvas>
+    <div class="canvases">
+      <canvas id="canvas1"></canvas>
+      <canvas id="canvas2"></canvas>
+    </div>
 
     <script src="index.js"></script>
   </body>

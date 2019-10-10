@@ -1,15 +1,11 @@
 self.addEventListener('message', e => {
-  const imageData = new ImageData(
-    new Uint8ClampedArray(e.data.buffer),
-    e.data.width,
-    e.data.height,
-  );
+  const data = new Uint8ClampedArray(e.data);
 
-  const result = {
-    buffer: imageData.data.buffer,
-    width: imageData.width,
-    height: imageData.height,
-  };
+  for (let i = 0; i < data.length; i += 4) {
+    data[i] = 100; // red
+    data[i + 1] = 255 - data[i + 1]; // green
+    data[i + 2] = 255 - data[i + 2]; // blue
+  }
 
-  self.postMessage(result);
+  self.postMessage(data.buffer, [data.buffer]);
 });
