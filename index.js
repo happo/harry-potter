@@ -1,41 +1,60 @@
 const video = document.querySelector('video');
 
-const canvas = document.querySelector('#canvas1');
-const ctx = canvas.getContext('2d');
+const captureCanvas = document.querySelector('#capture-canvas');
+const captureCtx = captureCanvas.getContext('2d');
 
-const canvas2 = document.querySelector('#canvas2');
-const ctx2 = canvas2.getContext('2d');
+const outputCanvas = document.querySelector('#output-canvas');
+const outputCtx = outputCanvas.getContext('2d');
+
+const stillCanvas = document.querySelector('#still-canvas');
+const stillCtx = stillCanvas.getContext('2d');
+
+const startButton = document.querySelector('#start-button');
 
 const worker = new Worker('worker.js');
 
 video.addEventListener('loadedmetadata', () => {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas2.width = video.videoWidth;
-  canvas2.height = video.videoHeight;
+  captureCanvas.width = video.videoWidth;
+  captureCanvas.height = video.videoHeight;
+  stillCanvas.width = video.videoWidth;
+  stillCanvas.height = video.videoHeight;
+  outputCanvas.width = video.videoWidth;
+  outputCanvas.height = video.videoHeight;
 });
 
-video.addEventListener('play', () => {
-  const tick = () => {
-    ctx.drawImage(video, 0, 0);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    worker.postMessage(imageData.data.buffer, [imageData.data.buffer]);
-  };
+function captureStillImage() {
+  setTimeout(() => {
+    stillCtx.drawImage(video, 0, 0);
+  }, 200);
+}
 
-  worker.addEventListener('message', e => {
-    const imageData = new ImageData(
-      new Uint8ClampedArray(e.data),
-      canvas.width,
-      canvas.height,
-    );
+function processOneFrame() {
+  captureCtx.drawImage(video, 0, 0);
+  const imageData = captureCtx.getImageData(
+    0,
+    0,
+    captureCanvas.width,
+    captureCanvas.height,
+  );
+  worker.postMessage(imageData.data.buffer, [imageData.data.buffer]);
+}
 
-    ctx.putImageData(imageData, 0, 0);
-    ctx2.putImageData(imageData, 0, 0);
-    requestAnimationFrame(tick);
-  });
+worker.addEventListener('message', e => {
+  const imageData = new ImageData(
+    new Uint8ClampedArray(e.data),
+    captureCanvas.width,
+    captureCanvas.height,
+  );
 
-  tick();
+  outputCtx.putImageData(imageData, 0, 0);
+  requestAnimationFrame(processOneFrame);
 });
+
+startButton.addEventListener('click', () => {
+  captureStillImage();
+  processOneFrame();
+  startButton.style.display = 'none';
+})
 
 navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
   video.srcObject = stream;

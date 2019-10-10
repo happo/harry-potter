@@ -6,16 +6,22 @@
         height: 90px;
       }
       canvas {
-        background-color: pink;
         display: block;
       }
-      #canvas2 {
+      #still-canvas,
+      #output-canvas {
         position: absolute;
         top: 0;
         left: 0;
       }
       .canvases {
         position: relative;
+      }
+      #start-button {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
       }
     </style>
   </head>
@@ -24,8 +30,10 @@
 
     <video></video>
     <div class="canvases">
-      <canvas id="canvas1"></canvas>
-      <canvas id="canvas2"></canvas>
+      <canvas id="capture-canvas"></canvas>
+      <canvas id="still-canvas"></canvas>
+      <canvas id="output-canvas"></canvas>
+      <button id="start-button">Start</button>
     </div>
 
     <script src="index.js"></script>
