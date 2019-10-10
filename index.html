@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <style>
+      video {
+        width: 120px;
+        height: 90px;
+      }
+      canvas {
+        background-color: pink;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Green screen test</h1>
+
+    <video></video>
+    <canvas></canvas>
+
+    <script>
+var video = document.querySelector('video');
+
+var canvas = document.querySelector('canvas');
+var ctx = canvas.getContext('2d');
+
+video.addEventListener('loadedmetadata', () => {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+});
+
+video.addEventListener('play', () => {
+  const tick = () => {
+    ctx.drawImage(video, 0, 0);
+    requestAnimationFrame(tick);
+  }
+  tick();
+});
+
+navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+  video.srcObject = stream;
+  video.play();
+});
+
+    </script>
+  </body>
+</html>
