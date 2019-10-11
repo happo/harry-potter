@@ -1,12 +1,24 @@
 <html>
   <head>
     <style>
+      * {
+        box-sizing: border-box;
+        font-family: sans-serif;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        margin: 0;
+      }
       video {
-        width: 120px;
-        height: 90px;
+        display: none;
       }
       canvas {
         display: block;
+        width: 100%;
       }
       #still-canvas,
       #output-canvas {
@@ -16,24 +28,47 @@
       }
       .canvases {
         position: relative;
+        width: 100vw;
+        height: 100vh;
       }
       #start-button {
+        padding: 10px 20px;
+        min-width: 200px;
+        background-color: blue;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: larger;
+        font-weight: bold;
+        cursor: pointer;
+
+      }
+      #start-container {
         position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        text-shadow: 0px 0px 5px #666;
       }
     </style>
   </head>
   <body>
-    <h1>Green screen test</h1>
-
-    <video></video>
+    <video playsinline="true"></video>
     <div class="canvases">
       <canvas id="capture-canvas"></canvas>
       <canvas id="still-canvas"></canvas>
       <canvas id="output-canvas"></canvas>
-      <button id="start-button">Start</button>
+      <div id="start-container">
+        <h2>Move out of the view and press the button to start</h2>
+        <button id="start-button">Start</button>
+      </div>
     </div>
 
     <script src="index.js"></script>

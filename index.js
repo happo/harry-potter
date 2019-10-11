@@ -10,8 +10,11 @@ const stillCanvas = document.querySelector('#still-canvas');
 const stillCtx = stillCanvas.getContext('2d');
 
 const startButton = document.querySelector('#start-button');
+const startContainer = document.querySelector('#start-container');
 
 const worker = new Worker('worker.js');
+
+let phase = 'initial';
 
 video.addEventListener('loadedmetadata', () => {
   captureCanvas.width = video.videoWidth;
@@ -39,6 +42,17 @@ function processOneFrame() {
   worker.postMessage(imageData.data.buffer, [imageData.data.buffer]);
 }
 
+video.addEventListener('play', () => {
+  function tick() {
+    if (phase !== 'initial') {
+      return;
+    }
+    outputCtx.drawImage(video, 0, 0);
+    requestAnimationFrame(tick);
+  }
+  tick();
+});
+
 worker.addEventListener('message', e => {
   const imageData = new ImageData(
     new Uint8ClampedArray(e.data),
@@ -51,9 +65,10 @@ worker.addEventListener('message', e => {
 });
 
 startButton.addEventListener('click', () => {
+  phase = 'running';
   captureStillImage();
   processOneFrame();
-  startButton.style.display = 'none';
+  startContainer.style.display = 'none';
 })
 
 navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
