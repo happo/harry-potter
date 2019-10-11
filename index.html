@@ -31,7 +31,7 @@
         width: 100vw;
         height: 100vh;
       }
-      #start-button {
+      button {
         padding: 10px 20px;
         min-width: 200px;
         background-color: blue;
@@ -41,7 +41,12 @@
         font-size: larger;
         font-weight: bold;
         cursor: pointer;
-
+      }
+      #stop-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: none;
       }
       #start-container {
         position: absolute;
@@ -70,6 +75,7 @@
         <button id="start-button">Start</button>
       </div>
     </div>
+    <button id="stop-button">Stop</button>
 
     <script src="index.js"></script>
   </body>

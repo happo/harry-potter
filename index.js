@@ -11,6 +11,7 @@ const stillCtx = stillCanvas.getContext('2d');
 
 const startButton = document.querySelector('#start-button');
 const startContainer = document.querySelector('#start-container');
+const stopButton = document.querySelector('#stop-button');
 
 const worker = new Worker('worker.js');
 
@@ -32,6 +33,9 @@ function captureStillImage() {
 }
 
 function processOneFrame() {
+  if (phase !== 'running') {
+    return;
+  }
   captureCtx.drawImage(video, 0, 0);
   const imageData = captureCtx.getImageData(
     0,
@@ -69,7 +73,16 @@ startButton.addEventListener('click', () => {
   captureStillImage();
   processOneFrame();
   startContainer.style.display = 'none';
+  stopButton.style.display = 'inline-block';
 })
+
+stopButton.addEventListener('click', () => {
+  phase = 'initial';
+  stopButton.style.display = 'none';
+  video.srcObject.getTracks().forEach((track) => {
+    track.stop();
+  });
+});
 
 navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
   video.srcObject = stream;
