@@ -1,6 +1,7 @@
 const MAX_EUCLIDEAN_DISTANCE = Math.sqrt(255 ** 2 * 4);
 
 let bg;
+let previousAlphas = [];
 
 self.addEventListener('message', e => {
   if (e.data.bg) {
@@ -34,9 +35,14 @@ self.addEventListener('message', e => {
           (blue - blue) ** 2 +
           (alpha - bgAlpha) ** 2,
       ) / MAX_EUCLIDEAN_DISTANCE;
+    const previousAlpha =
+      typeof previousAlphas[i] === 'number' ? previousAlphas[i] : 255;
     if (euclideanDistance < 0.05) {
-      data[i + 3] = 0;
+      data[i + 3] = Math.max(previousAlpha - 30, 0);
+    } else {
+      data[i + 3] = Math.min(previousAlpha + 30, 155);
     }
+    previousAlphas[i] = data[i + 3];
   }
 
   self.postMessage(data.buffer, [data.buffer]);
