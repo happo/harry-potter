@@ -6,9 +6,6 @@ const captureCtx = captureCanvas.getContext('2d');
 const outputCanvas = document.querySelector('#output-canvas');
 const outputCtx = outputCanvas.getContext('2d');
 
-const stillCanvas = document.querySelector('#still-canvas');
-const stillCtx = stillCanvas.getContext('2d');
-
 const startButton = document.querySelector('#start-button');
 const startContainer = document.querySelector('#start-container');
 const stopButton = document.querySelector('#stop-button');
@@ -20,15 +17,20 @@ let phase = 'initial';
 video.addEventListener('loadedmetadata', () => {
   captureCanvas.width = video.videoWidth;
   captureCanvas.height = video.videoHeight;
-  stillCanvas.width = video.videoWidth;
-  stillCanvas.height = video.videoHeight;
   outputCanvas.width = video.videoWidth;
   outputCanvas.height = video.videoHeight;
 });
 
-function captureStillImage() {
+function captureBackground() {
   setTimeout(() => {
-    stillCtx.drawImage(video, 0, 0);
+    captureCtx.drawImage(video, 0, 0);
+    const imageData = captureCtx.getImageData(
+      0,
+      0,
+      captureCanvas.width,
+      captureCanvas.height,
+    );
+    worker.postMessage({ bg: imageData.data.buffer }, [imageData.data.buffer]);
   }, 200);
 }
 
@@ -43,7 +45,7 @@ function processOneFrame() {
     captureCanvas.width,
     captureCanvas.height,
   );
-  worker.postMessage(imageData.data.buffer, [imageData.data.buffer]);
+  worker.postMessage({ frame: imageData.data.buffer }, [imageData.data.buffer]);
 }
 
 video.addEventListener('play', () => {
@@ -70,7 +72,7 @@ worker.addEventListener('message', e => {
 
 startButton.addEventListener('click', () => {
   phase = 'running';
-  captureStillImage();
+  captureBackground();
   processOneFrame();
   startContainer.style.display = 'none';
   stopButton.style.display = 'inline-block';

@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Invisibility cloak</title>
+    <title>Harry Potter yo'self</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
@@ -26,11 +26,13 @@
         height: 100vh;
         object-fit: cover;
       }
-      #still-canvas,
       #output-canvas {
         position: absolute;
         top: 0;
         left: 0;
+        background-image: url(https://cdn.pixabay.com/photo/2015/11/07/11/20/forest-1031022_1280.jpg);
+        background-size: cover;
+        background-position: center center;
       }
       .canvases {
         position: relative;
@@ -75,7 +77,6 @@
     <video playsinline="true"></video>
     <div class="canvases">
       <canvas id="capture-canvas"></canvas>
-      <canvas id="still-canvas"></canvas>
       <canvas id="output-canvas"></canvas>
       <div id="start-container">
         <h2>Move out of the view, then press Start</h2>
